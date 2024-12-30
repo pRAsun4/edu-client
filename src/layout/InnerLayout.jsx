@@ -1,16 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Layout } from "./Layout";
 import { clearUser, toggleDarkMode } from "../features/appSlice";
-import { MdLogout } from "react-icons/md";
-import { logout, useAuth } from "wasp/client/auth";
 import { Link } from "react-router-dom";
 import { FaMoon, FaSun } from "react-icons/fa";
 import RightLogo from "../assets/svg/RightLogo";
+import PropTypes from "prop-types";
 import { useState } from "react";
 import { LuPencilLine } from "react-icons/lu";
-import { FaUserTie } from "react-icons/fa";
+// import { FaUserTie } from "react-icons/fa";
 import { setActiveClass } from "../features/appSlice";
-import { AvatarFunc, useUserEmailPart } from "../utils/Functions";
+// import { AvatarFunc } from "../utils/Functions";
 
 export const InnerLayout = ({
   children,
@@ -19,14 +18,13 @@ export const InnerLayout = ({
   ChildIcon,
   navClass,
 }) => {
-  const activeDarkmode = useSelector((state) => state.user.darkModeActivate);
-  const { data: user } = useAuth();
+  const activeDarkmode = useSelector((state) => state.app.darkModeActivate);
   const [openBox, setOpenBox] = useState(false);
   const dispatch = useDispatch();
   const handleClearUser = () => {
     dispatch(clearUser());
   };
-  const userEmailPart = user?.email?.slice(0, user.email.indexOf('@'))
+  // const userEmailPart = user?.email?.slice(0, user.email.indexOf("@"));
 
   const handleModeToggle = () => {
     dispatch(toggleDarkMode());
@@ -73,7 +71,7 @@ export const InnerLayout = ({
                   onClick={handleProfile}
                   className="profile-box w-auto md:min-w-[11.5rem] relative h-[56px] pl-3 pr-8 py-2 flex items-center cursor-pointer rounded-md border"
                 >
-                  {user?.name ? (
+                  {/* {user?.name ? (
                     <img
                       src={AvatarFunc(user.name)}
                       alt={user.name}
@@ -81,7 +79,7 @@ export const InnerLayout = ({
                     />
                   ) : (
                     <FaUserTie className="w-6 h-6 placeholder_user" />
-                  )}
+                  )} */}
                   <div className="pro-titel ml-3 flex flex-col items-start">
                     {user?.name ? (
                       <p className="capitalize p font-medium sm:flex hidden leading-none">
@@ -96,8 +94,8 @@ export const InnerLayout = ({
                       {user?.role === "ORG_ADMIN"
                         ? "Org admin"
                         : user?.role === "ORG_MEMBER"
-                        ? "Org member"
-                        : "Super admin"}
+                          ? "Org member"
+                          : "Super admin"}
                     </p>
                   </div>
 
@@ -163,4 +161,12 @@ export const InnerLayout = ({
       </section>
     </Layout>
   );
+};
+
+InnerLayout.propTypes = {
+  children: PropTypes.node,
+  Nav: PropTypes.elementType,
+  childHeader: PropTypes.string,
+  ChildIcon: PropTypes.elementType,
+  navClass: PropTypes.string,
 };

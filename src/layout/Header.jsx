@@ -4,7 +4,6 @@ import {
   toggleDarkMode,
   toggleSidebar,
 } from "../features/appSlice";
-import { useAuth } from "wasp/client/auth";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
@@ -15,37 +14,34 @@ import ReviewLogo from "../assets/svg/ReviewLogo";
 import LogoText from "../assets/svg/LogoText";
 
 export const Header = ({ className }) => {
-  const { data: user } = useAuth();
-  const [isOrgAdmin, setIsOrgAdmin] = useState(false);
+  // const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const dispatch = useDispatch();
 
-  const activeDarkmode = useSelector((state) => state.user.darkModeActivate);
-  const activeSidebar = useSelector((state) => state.user.sidebarVisible);
-  const activeIndex = useSelector((state) => state.user.activeClass);
+  const activeDarkmode = useSelector((state) => state.app.darkModeActivate);
+  const activeSidebar = useSelector((state) => state.app.sidebarVisible);
+  const activeIndex = useSelector((state) => state.app.activeClass);
 
-  const [isScreenLarge, setIsScreenLarge] = useState(window.innerWidth > 980);
+  // const [isScreenLarge, setIsScreenLarge] = useState(window.innerWidth > 980);
 
   // Handle resize event
-  const handleResize = () => {
-    // Update the state when screen size is greater than 980px
-    if (window.innerWidth > 980) {
-      setIsScreenLarge(true);
-    } else {
-      setIsScreenLarge(false);
-    }
-  };
+  // const handleResize = () => {
+  //   // Update the state when screen size is greater than 980px
+  //   if (window.innerWidth > 980) {
+  //     setIsScreenLarge(true);
+  //   } else {
+  //     setIsScreenLarge(false);
+  //   }
+  // };
 
   // Use effect to add resize event listener when the component mounts
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
+  // useEffect(() => {
+  //   window.addEventListener('resize', handleResize);
 
-    // Cleanup the event listener when component unmounts
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-
+  //   // Cleanup the event listener when component unmounts
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -53,26 +49,25 @@ export const Header = ({ className }) => {
         dispatch(toggleSidebar(false));
       }
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
-
   }, [dispatch]);
 
   const [isHamburgerActive, setIsHamburgerActive] = useState(false);
 
-  const filteredSidebarData = SidebarData.filter((data) =>
-    data.roles.includes(user?.role)
- );
+  //   const filteredSidebarData = SidebarData.filter((data) =>
+  //     data.roles.includes(user?.role)
+  //  );
 
-  useEffect(() => {
-   
-    if (user && user.role === "ORG_ADMIN") {
-      setIsOrgAdmin(true);
-    }
-  }, [user]);
+  // useEffect(() => {
+
+  //   if (user && user.role === "ORG_ADMIN") {
+  //     setIsOrgAdmin(true);
+  //   }
+  // }, [user]);
 
   // const handleClearUser = () => {
   //   dispatch(clearUser());
@@ -97,57 +92,62 @@ export const Header = ({ className }) => {
 
   return (
     <header
-      className={`header ${className} ${activeSidebar ? "sidebar-active" : "header__collapse"
-        } ${isHamburgerActive ? "hamburger__active" : ""}`}
+      className={`header ${className} ${
+        activeSidebar ? "sidebar-active" : "header__collapse"
+      } ${isHamburgerActive ? "hamburger__active" : ""}`}
     >
       <div className="flex flex-col justify-between gap-5 h-screen header__inner">
         <div>
           <Link
             to={`/`}
-            className={` link-btn main-logo flex ${activeSidebar
-              ? "items-center justify-start p-5"
-              : "items-center justify-center pl-3"
-              }`}
+            className={` link-btn main-logo flex ${
+              activeSidebar
+                ? "items-center justify-start p-5"
+                : "items-center justify-center pl-3"
+            }`}
           >
             <ReviewLogo className=" w-[30px] h-[30px] " />
-            {activeSidebar ? (
-              <LogoText className=" w-fit h-[30px] " />
-            ) : null}
+            {activeSidebar ? <LogoText className=" w-fit h-[30px] " /> : null}
           </Link>
           <nav className="nav-header">
             <ul
-              className={` ${activeSidebar
-                ? "justify-start items-center"
-                : "items-center justify-center"
-                } flex`}
+              className={` ${
+                activeSidebar
+                  ? "justify-start items-center"
+                  : "items-center justify-center"
+              } flex`}
             >
-               {filteredSidebarData.map((data, index) => {
-            // Conditionally skip rendering "Review Pages" if isOrgAdmin is false
-            if (data.menu === "Review Pages" && !isOrgAdmin) return null;
+              {SidebarData.map((data, index) => {
+                // Conditionally skip rendering "Review Pages" if isOrgAdmin is false
+                // if (data.menu === "Review Pages" && !isOrgAdmin) return null;
 
-            return (
-               <li
-                  key={index}
-                  className={`${activeIndex === index ? "active" : ""} sidebar-item w-full`}
-                  title={data.title}
-                  onClick={() => handleActiveClass(index)}
-               >
-                  <Link to={data.link} className={` link-btn py-2 px-6 ${activeIndex === index ? "active" : ""} sidebar-item w-full`}>
-                     {data.icon}
-                     {activeSidebar ? (
+                return (
+                  <li
+                    key={index}
+                    className={`${activeIndex === index ? "active" : ""} sidebar-item w-full`}
+                    title={data.title}
+                    onClick={() => handleActiveClass(index)}
+                  >
+                    <Link
+                      to={data.link}
+                      className={` link-btn py-2 px-6 ${activeIndex === index ? "active" : ""} sidebar-item w-full`}
+                    >
+                      {data.icon}
+                      {activeSidebar ? (
                         <span className="sidebar-text">{data.menu}</span>
-                     ) : null}
-                  </Link>
-               </li>
-            );
-         })}
+                      ) : null}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </div>
 
         <div
-          className={`flex flex-col xl:flex-column gap-4 py-5 nav-footer ${activeSidebar ? " " : "justify-center items-start"
-            } `}
+          className={`flex flex-col xl:flex-column gap-4 py-5 nav-footer ${
+            activeSidebar ? " " : "justify-center items-start"
+          } `}
         >
           <button
             className="py-4 px-6 gap-2
@@ -167,22 +167,10 @@ export const Header = ({ className }) => {
             title="mode toggle"
           >
             <span className="toggle_icon">
-              {activeDarkmode ? (
-                <FaMoon size={20} />
-              ) : (
-                <FaSun size={20} />
-              )}
+              {activeDarkmode ? <FaMoon size={20} /> : <FaSun size={20} />}
             </span>
             {/* <span>{activeDarkmode ? "light" : "dark"}</span> */}
           </button>
-          {/* <button
-            className="py-4 px-6 gap-3 flex flex-row items-center !min-w-0 mode-btn"
-            onClick={handleModeToggle}
-            title="mode toggle"
-          >
-            {activeDarkmode ? <FaSun size={20} /> : <FaMoon size={20} />}
-            {activeSidebar && <span>Dark</span>}
-          </button> */}
         </div>
 
         <button
