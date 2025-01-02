@@ -80,7 +80,7 @@ export const InnerLayout = ({
                   ) : (
                     <FaUserTie className="w-6 h-6 placeholder_user" />
                   )} */}
-                  <div className="pro-titel ml-3 flex flex-col items-start">
+                  {/* <div className="pro-titel ml-3 flex flex-col items-start">
                     {user?.name ? (
                       <p className="capitalize p font-medium sm:flex hidden leading-none">
                         {user.name}
@@ -97,7 +97,7 @@ export const InnerLayout = ({
                           ? "Org member"
                           : "Super admin"}
                     </p>
-                  </div>
+                  </div> */}
 
                   <span className="profile-btn absolute right-2 top-[30%]">
                     <RightLogo />
@@ -129,7 +129,6 @@ export const InnerLayout = ({
                         type="button"
                         onClick={() => {
                           handleClearUser();
-                          logout();
                         }}
                         title="Logout"
                       >

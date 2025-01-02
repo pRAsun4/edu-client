@@ -1,5 +1,7 @@
 import { MdDashboardCustomize, MdReviews } from "react-icons/md";
-import { FaUser, FaCog, FaStar } from "react-icons/fa";
+import { FaCog, FaStar } from "react-icons/fa";
+import { GoOrganization } from "react-icons/go";
+import { BsFillPeopleFill } from "react-icons/bs";
 
 // SidebarData Array with Roles
 export const SidebarData = [
@@ -11,11 +13,18 @@ export const SidebarData = [
       roles: ["SUPER_ADMIN", "ORG_ADMIN", "ORG_MEMBER"], // Accessible by all roles
    },
    {
-      menu: "Customers",
-      link: "/customers",
-      icon: <FaUser size={20} />,
-      title: "Customers",
-      roles: ["ORG_ADMIN", "ORG_MEMBER"]
+      menu: "Organization",
+      link: "/organizations",
+      icon: <GoOrganization size={20} />,
+      title: "Organization",
+      roles: ["ORG_ADMIN", "ORG_MEMBER"],
+   },
+   {
+      menu: "Team Member",
+      link: "/members",
+      icon: <BsFillPeopleFill size={20} />,
+      title: "Team Member",
+      roles: ["ORG_ADMIN", "ORG_MEMBER"],
    },
    {
       menu: "Reviews",
@@ -29,20 +38,13 @@ export const SidebarData = [
       link: "/settings",
       icon: <FaCog size={20} />,
       title: "Settings",
-      roles: ["ORG_ADMIN","ORG_MEMBER"], // Accessible by SUPER_ADMIN and ORG_ADMIN
-   },
-   {
-      menu: "Settings",
-      link: "/members",
-      icon: <FaCog size={20} />,
-      title: "Settings",
-      roles: ["SUPER_ADMIN"], // Accessible by SUPER_ADMIN and ORG_ADMIN
+      roles: ["ORG_ADMIN", "ORG_MEMBER"], // Accessible by SUPER_ADMIN and ORG_ADMIN
    },
    {
       menu: "Review Pages",
       link: "/review-pages",
       icon: <FaStar size={20} />,
       title: "Review Pages",
-      roles: ["SUPER_ADMIN", "ORG_ADMIN","ORG_MEMBER"], // Accessible by SUPER_ADMIN and ORG_ADMIN
+      roles: ["SUPER_ADMIN", "ORG_ADMIN", "ORG_MEMBER"], // Accessible by SUPER_ADMIN and ORG_ADMIN
    },
 ];

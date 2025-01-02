@@ -10,8 +10,8 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
 import { SidebarData } from "../api-data/Sidebar";
-import ReviewLogo from "../assets/svg/ReviewLogo";
 import LogoText from "../assets/svg/LogoText";
+import Logo from "../assets/svg/Logo";
 
 export const Header = ({ className }) => {
   // const [isOrgAdmin, setIsOrgAdmin] = useState(false);
@@ -106,7 +106,7 @@ export const Header = ({ className }) => {
                 : "items-center justify-center pl-3"
             }`}
           >
-            <ReviewLogo className=" w-[30px] h-[30px] " />
+            <Logo className=" w-[30px] h-[30px] " />
             {activeSidebar ? <LogoText className=" w-fit h-[30px] " /> : null}
           </Link>
           <nav className="nav-header">

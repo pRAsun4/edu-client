@@ -98,7 +98,7 @@ body {
   font-family: "Work Sans", sans-serif !important;
   background-color: var(--body-background);
   color: var(--text-dark-color);
-  user-select: none;
+  /* user-select: none; */
 }
 
 input,

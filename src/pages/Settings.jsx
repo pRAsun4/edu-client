@@ -1,52 +1,48 @@
 import { InnerLayout } from "../layout/InnerLayout";
 import { SettingsNav } from "../components/Settings/SettingsNav";
 import { Link } from "react-router-dom";
-import { FaCog, FaCopy } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
 import { FormInput } from "../components/Form/FormInput";
-import { MdDelete } from "react-icons/md";
-import {
-  getOrganization,
-  updateOrganization,
-  useQuery,
-} from "wasp/client/operations";
+// import { MdDelete } from "react-icons/md";
 import { useEffect, useState } from "react";
-export const Settings = ({ user }) => {
+export const Settings = () => {
   
-  if(!user.organizationId){
-    return (
-      <InnerLayout Nav={SettingsNav} childHeader="Settings" ChildIcon={FaCog}>
-        <div>
-          <h4>You are not authorized to view this page</h4>
-        </div>
-        </InnerLayout>
-    )
-  }
+  // if(!user.organizationId){
+  //   return (
+  //     <InnerLayout Nav={SettingsNav} childHeader="Settings" ChildIcon={FaCog}>
+  //       <div>
+  //         <h4>You are not authorized to view this page</h4>
+  //       </div>
+  //       </InnerLayout>
+  //   )
+  // }
 
-  const {
-    data: orgName,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery(getOrganization, {
-    id: user.organizationId,
-  });
+  // const {
+  //   data: orgName,
+  //   isLoading,
+  //   isError,
+  //   refetch,
+  // } = useQuery(getOrganization, {
+  //   id: user.organizationId,
+  // });
   const [organization, setOrganization] = useState({
     name: "",
     slug: "",
     websiteUrl: "",
     reviewsVisible: false,
   });
+  useEffect(() => {});
 
-  useEffect(() => {
-    if (orgName) {
-      setOrganization({
-        name: orgName.name || "",
-        slug: orgName.slug || "",
-        websiteUrl: orgName.websiteUrl || "",
-        reviewsVisible: orgName.reviewsVisible || false,
-      });
-    }
-  }, [orgName]);
+  // useEffect(() => {
+  //   if (orgName) {
+  //     setOrganization({
+  //       name: orgName.name || "",
+  //       slug: orgName.slug || "",
+  //       websiteUrl: orgName.websiteUrl || "",
+  //       reviewsVisible: orgName.reviewsVisible || false,
+  //     });
+  //   }
+  // }, [orgName]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -65,15 +61,15 @@ export const Settings = ({ user }) => {
   // Handle form save (API call to update organization)
   const handleSave = async () => {
     try {
-      await updateOrganization({
-        organizationId: user.organizationId,
-        name: organization.name,
-        slug: organization.slug,
-        websiteUrl: organization.websiteUrl,
-        reviewsVisible: organization.reviewsVisible,
-      });
+      // await updateOrganization({
+      //   // organizationId: user.organizationId,
+      //   name: organization.name,
+      //   slug: organization.slug,
+      //   websiteUrl: organization.websiteUrl,
+      //   reviewsVisible: organization.reviewsVisible,
+      // });
       alert("Organization details updated successfully!");
-      refetch(); // Refresh the data after successful update
+      // refetch(); // Refresh the data after successful update
     } catch (error) {
       console.error("Error updating organization:", error);
       alert("Failed to update organization details.");
@@ -198,7 +194,7 @@ export const Settings = ({ user }) => {
             </div>
           </div>
 
-          {user.role == "SUPER_ADMIN" ? (
+          {/* {user.role == "SUPER_ADMIN" ? (
             <div className="w-full max-w-3xl h-full flex items-center justify-center sm:justify-between flex-wrap gap-5 p-5 rounded-md bg-second border card-bg">
               <button type="button" className="flex btn border ">
                 Duplicate project
@@ -209,7 +205,7 @@ export const Settings = ({ user }) => {
                 Delete
               </button>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       </div>
     </InnerLayout>
