@@ -1754,3 +1754,9 @@ header.dark {
     }
   }
 }
+/* customs */
+.auth-wrapper {
+  form {
+    width: 100%;
+  }
+}
