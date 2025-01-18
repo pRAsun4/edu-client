@@ -24,7 +24,7 @@ function App() {
     <>
       <Routes>
         {/* Landing Page */}
-        <Route
+        {/* <Route
           path="/"
           element={
             isAuthenticated() ? (
@@ -33,23 +33,24 @@ function App() {
               <Navigate to="/login" />
             )
           }
-        />
+        /> */}
 
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/settings" element={<Settings />} />
+        {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
 
         {/* Private Routes */}
-        <Route
+        {/* <Route
           path="/settings"
           element={
             <PrivateRoute>
               <Settings />
             </PrivateRoute>
           }
-        />
+        /> */}
       </Routes>
     </>
   );

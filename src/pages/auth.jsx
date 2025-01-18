@@ -70,6 +70,7 @@ AuthFooter.propTypes = {
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const handleLogin = () => {
     // Login logic using email and password
