@@ -6,6 +6,7 @@ import LogoText from "../assets/svg/LogoText";
 import PropTypes from "prop-types";
 import { FormInput } from "../components/Form/FormInput";
 import { useState } from "react";
+import { meta } from "@eslint/js";
 
 // Reusable Auth Wrapper
 const AuthWrapper = ({ children, imgValue, altValue }) => (
@@ -70,7 +71,6 @@ AuthFooter.propTypes = {
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
 
   const handleLogin = () => {
     // Login logic using email and password
@@ -79,7 +79,7 @@ export const Login = () => {
   return (
     <AuthWrapper imgValue={LoginImg} altValue="Login Image">
       {/* <LoginForm /> */}
-      <FormInput className='w-full'>
+      <FormInput className="w-full">
         <form onSubmit={handleLogin}>
           <input
             type="email"
@@ -111,18 +111,53 @@ export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState("");
 
-  const handleSignup = () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    // Validate password and confirm password
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
+    const apiUrl = import.meta.env.VITE_APP_API_URL;
+    try {
+      setLoading(true);
+      setError("");
+      
+      // Call the backend API to register the user
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to sign up");
+      }
+      
+      alert("Signup successful! Please login.");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+    console.log(apiUrl, "url");
     console.log("Signup:", { email, password });
   };
 
   return (
     <AuthWrapper imgValue={LoginImg} altValue="Signup Image">
-      <FormInput className='w-full'>
+      <FormInput className="w-full" >
         <form onSubmit={handleSignup}>
           <input
             type="email"
@@ -178,7 +213,7 @@ export const ForgotPassword = () => {
   };
   return (
     <AuthWrapper>
-      <FormInput className='w-full'>
+      <FormInput className="w-full">
         <form onSubmit={handleForgotPassword}>
           <h2>Forgot Password</h2>
           <input
@@ -216,7 +251,7 @@ export const ResetPassword = () => {
   };
   return (
     <AuthWrapper>
-      <FormInput className='w-full'>
+      <FormInput className="w-full">
         <form onSubmit={handleResetPassword}>
           <h2>Reset Password</h2>
           <input
