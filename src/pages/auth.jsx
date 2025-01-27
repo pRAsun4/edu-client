@@ -1,14 +1,21 @@
-import { Link } from "react-router-dom";
-import LoginImg from "../assets/image/loginBg.jpg";
-import loginFront from "../assets/image/loginContent.png";
+import { Link, useNavigate } from "react-router-dom";
+// import LoginImg from "../assets/image/loginBg.jpg";
+import signupImg from "../assets/image/signup-img.jpg";
 import EduLogo from "../assets/svg/Logo";
 import LogoText from "../assets/svg/LogoText";
 import PropTypes from "prop-types";
+import axios from "axios";
 import { FormInput } from "../components/Form/FormInput";
 import { useState } from "react";
 
 // Reusable Auth Wrapper
-const AuthWrapper = ({ children, imgValue, altValue }) => (
+const AuthWrapper = ({
+  children,
+  imgValue,
+  altValue,
+  isSubmitted,
+  successMessage,
+}) => (
   <div
     className={`mx-auto w-full min-h-screen flex lg:flex-row flex-col items-center justify-center ${
       imgValue ? "container-fluid" : "container"
@@ -24,19 +31,23 @@ const AuthWrapper = ({ children, imgValue, altValue }) => (
         <EduLogo className="w-[30px] h-[30px]" />
         <LogoText className="w-fit h-[30px]" />
       </div>
-      {children}
+      {/* Conditional rendering for success message or form */}
+      {isSubmitted ? (
+        <div className="flex flex-col items-center justify-center text-center">
+          <h2 className="text-2xl font-semibold text-green-600">
+            {successMessage}
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Please check your email to verify your account.
+          </p>
+        </div>
+      ) : (
+        children
+      )}
     </div>
     {imgValue && (
-      <div
-        className="login_image lg:w-1/2"
-        style={{
-          backgroundImage: `url(${imgValue})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        <img src={loginFront} alt={altValue} className="h-full w-full" />
+      <div className="login_image lg:w-1/2">
+        <img src={imgValue} alt={altValue} className="h-full w-full" />
       </div>
     )}
   </div>
@@ -46,6 +57,7 @@ AuthWrapper.propTypes = {
   children: PropTypes.node.isRequired,
   imgValue: PropTypes.string,
   altValue: PropTypes.string,
+  successMessage: PropTypes.string,
 };
 
 // Reusable Footer Text
@@ -70,32 +82,64 @@ AuthFooter.propTypes = {
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Error message display
+  const navigate = useNavigate(); // Hook for navigation
 
-  const handleLogin = () => {
-    // Login logic using email and password
-    console.log("Login:", { email, password });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("https://edu-server-z44l.onrender.com/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { token } = data;
+
+        // Store token in localStorage
+        localStorage.setItem("authToken", token);
+
+        // Navigate to the /settings route
+        navigate("/settings");
+      } else {
+        const errorText = await response.text();
+        setErrorMessage(errorText || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrorMessage("An error occurred. Please try again later.");
+    }
   };
+
   return (
-    <AuthWrapper imgValue={LoginImg} altValue="Login Image">
-      {/* <LoginForm /> */}
-      <FormInput className='w-full'>
+    <AuthWrapper imgValue={signupImg} altValue="Login Image">
+      <FormInput className="w-full">
         <form onSubmit={handleLogin}>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
+            required
           />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            required
           />
           <button type="submit">Login</button>
+          {errorMessage && (
+            <p className="text-red-600 mt-2 text-sm">{errorMessage}</p>
+          )}
         </form>
       </FormInput>
-      <br />
       <AuthFooter
         message="Forgot your password?"
         className="text-[#1D4ED8] underline"
@@ -106,51 +150,97 @@ export const Login = () => {
   );
 };
 
+
 export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Tracks if the form is submitted
 
-  const handleSignup = () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Signup:", { email, password });
+    setLoading(true);
+    try {
+      await axios.post("https://edu-server-z44l.onrender.com/auth/signup", {
+        email,
+        password,
+      });
+      setIsSubmitted(true); // Show the success message
+    } catch (error) {
+      console.error("Signup error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Signup failed!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthWrapper imgValue={LoginImg} altValue="Signup Image">
-      <FormInput className='w-full'>
-        <form onSubmit={handleSignup}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-          />
-          <button type="submit">Signup</button>
-        </form>
-      </FormInput>
+    <AuthWrapper imgValue={signupImg} altValue="Signup Image">
+      {isSubmitted ? (
+        <div className="flex flex-col items-center justify-center text-center">
+          <h2 className="text-2xl font-semibold text-green-600">
+            Email Verification Sent
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Please check your email to verify your account.
+          </p>
+        </div>
+      ) : (
+        <FormInput className="w-full">
+          <form onSubmit={handleSignup}>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+              className="border rounded-md p-2 w-full mb-4"
+            />
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="border rounded-md p-2 w-full mb-4"
+            />
+            <input
+              type="password"
+              name="confirmpassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              required
+              className="border rounded-md p-2 w-full mb-4"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full bg-blue-500 text-white py-2 rounded-md flex items-center justify-center ${
+                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+              }`}
+            >
+              {loading ? "Signing up..." : "Signup"}
+            </button>
+          </form>
+        </FormInput>
+      )}
       <br />
-      <AuthFooter
-        message="Already have an account?"
-        className="text-[#1D4ED8] underline"
-        linkText="Login"
-        linkTo="/login"
-      />
+      {!isSubmitted && (
+        <AuthFooter
+          message="Already have an account?"
+          className="text-[#1D4ED8] underline"
+          linkText="Login"
+          linkTo="/login"
+        />
+      )}
     </AuthWrapper>
   );
 };
@@ -177,7 +267,7 @@ export const ForgotPassword = () => {
   };
   return (
     <AuthWrapper>
-      <FormInput className='w-full'>
+      <FormInput className="w-full">
         <form onSubmit={handleForgotPassword}>
           <h2>Forgot Password</h2>
           <input
@@ -215,7 +305,7 @@ export const ResetPassword = () => {
   };
   return (
     <AuthWrapper>
-      <FormInput className='w-full'>
+      <FormInput className="w-full">
         <form onSubmit={handleResetPassword}>
           <h2>Reset Password</h2>
           <input
