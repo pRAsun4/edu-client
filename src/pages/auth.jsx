@@ -138,12 +138,18 @@ export const Login = () => {
             placeholder="Password"
             required
           />
-          <button type="submit">Login</button>
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md flex items-center justify-center">Login</button>
           {errorMessage && (
             <p className="text-red-600 mt-2 text-sm">{errorMessage}</p>
           )}
         </form>
       </FormInput>
+      <AuthFooter
+        message="Dont have an account?"
+        className="text-[#1D4ED8] underline"
+        linkText="sign up"
+        linkTo="/signup"
+      />
       <AuthFooter
         message="Forgot your password?"
         className="text-[#1D4ED8] underline"
