@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { FormInput } from "../components/Form/FormInput";
 import { useState } from "react";
+import { meta } from "@eslint/js";
 
 // Reusable Auth Wrapper
 const AuthWrapper = ({
@@ -89,13 +90,16 @@ export const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://edu-server-z44l.onrender.com/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://edu-server-z44l.onrender.com/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -149,7 +153,6 @@ export const Login = () => {
     </AuthWrapper>
   );
 };
-
 
 export const Signup = () => {
   const [email, setEmail] = useState("");

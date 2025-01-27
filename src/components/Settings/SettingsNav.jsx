@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FaCaretDown } from "react-icons/fa";
+import User from '../../api-data/DemoUser'
 import { SettingsMenuData } from '../../api-data/SettingsMenuData';
 
 export const SettingsNav = ({ navClass }) => {
@@ -13,30 +14,29 @@ export const SettingsNav = ({ navClass }) => {
             setIsDropdownActive(prevState => !prevState);
         }
     };
-    useEffect(() => {});
-    // useEffect(() => {
-    //     let filteredMenu;
+    useEffect(() => {
+        let filteredMenu;
 
-    //     // Filter menu based on user role
-    //     if (user && user.role === "SUPER_ADMIN") {
-    //         // Super Admin only sees Members
-    //         filteredMenu = SettingsMenuData.filter(data => data.menu === "Members");
-    //     } else {
-    //         // For other roles (ORG_ADMIN, ORG_MEMBER), show items based on `visibleTo`
-    //         filteredMenu = SettingsMenuData.filter(data => data.visibleTo?.includes(user?.role));
-    //     }
+        // Filter menu based on user role
+        if (User && User.role === "SUPER_ADMIN") {
+            // Super Admin only sees Members
+            filteredMenu = SettingsMenuData.filter(data => data.menu === "Members");
+        } else {
+            // For other roles (ORG_ADMIN, ORG_MEMBER), show items based on `visibleTo`
+            filteredMenu = SettingsMenuData.filter(data => data.visibleTo?.includes(User?.role));
+        }
 
-    //     if (window.matchMedia("(max-width: 1279px)").matches) {
-    //         // Reorder menu to move active link to the top
-    //         setReorderedMenu([
-    //             ...filteredMenu.filter(data => data.link === location.pathname),
-    //             ...filteredMenu.filter(data => data.link !== location.pathname)
-    //         ]);
-    //     } else {
-    //         // Reset to default order for larger screens
-    //         setReorderedMenu(filteredMenu);
-    //     }
-    // }, [location.pathname, user]);
+        if (window.matchMedia("(max-width: 1279px)").matches) {
+            // Reorder menu to move active link to the top
+            setReorderedMenu([
+                ...filteredMenu.filter(data => data.link === location.pathname),
+                ...filteredMenu.filter(data => data.link !== location.pathname)
+            ]);
+        } else {
+            // Reset to default order for larger screens
+            setReorderedMenu(filteredMenu);
+        }
+    }, [User]);
 
     return (
         <aside
