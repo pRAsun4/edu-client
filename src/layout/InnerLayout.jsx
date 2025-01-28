@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Layout } from "./Layout";
 import { clearUser, toggleDarkMode } from "../features/appSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaMoon, FaSun } from "react-icons/fa";
 import RightLogo from "../assets/svg/RightLogo";
 import PropTypes from "prop-types";
@@ -21,8 +21,42 @@ export const InnerLayout = ({
   const activeDarkmode = useSelector((state) => state.app.darkModeActivate);
   const [openBox, setOpenBox] = useState(false);
   const dispatch = useDispatch();
-  const handleClearUser = () => {
-    dispatch(clearUser());
+  const navigate = useNavigate();
+  const handleClearUser = async () => {
+    try {
+      const token = localStorage.getItem("authToken"); // Get token from localStorage
+      if (!token) {
+        throw new Error("User not authenticated");
+      }
+
+      const response = await fetch(
+        "http://localhost:5000/auth/logout",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Send token for authentication
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Clear user data from Redux store
+        dispatch(clearUser());
+
+        // Remove token and user details from localStorage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userDetails");
+
+        // Navigate to the login page
+        navigate("/login");
+      } else {
+        const errorText = await response.text();
+        console.error("Logout failed:", errorText);
+      }
+    } catch (error) {
+      console.error("Error during logout:", error.message);
+    }
   };
   // const userEmailPart = user?.email?.slice(0, user.email.indexOf("@"));
 

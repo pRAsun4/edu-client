@@ -2,7 +2,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: "",
+  user: null,
+  token: null,
   reviewsVisible: false,
   sidebarVisible: false,
   activeClass: sessionStorage.getItem("activeClass") || 0,
@@ -17,13 +18,15 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
     setReviewsVisible: (state, action) => {
       state.reviewsVisible = action.payload;
     },
     clearUser: (state) => {
       state.user = null;
+      state.token = null;
     },
     toggleSidebar: (state) => {
       state.sidebarVisible = !state.sidebarVisible;

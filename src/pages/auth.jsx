@@ -8,6 +8,8 @@ import axios from "axios";
 import { FormInput } from "../components/Form/FormInput";
 import { useState } from "react";
 import { meta } from "@eslint/js";
+import { useDispatch } from "react-redux";
+import { setUser } from "../features/appSlice";
 
 // Reusable Auth Wrapper
 const AuthWrapper = ({
@@ -83,40 +85,56 @@ AuthFooter.propTypes = {
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Error message display
-  const navigate = useNavigate(); // Hook for navigation
+  const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch(); // Redux dispatch hook
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await fetch(
-        "https://edu-server-z44l.onrender.com/auth/login",
+      const response = await axios.post(
+        "http://localhost:5000/auth/login",
+        { email, password }, // Request body
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        const { token } = data;
+      // If the login is successful
+      if (response.status === 200) {
+        const { token, user } = response.data;
 
-        // Store token in localStorage
+        // Save user data to Redux store
+        dispatch(setUser({ user, token }));
+
+        // Store in localStorage (optional for session persistence)
         localStorage.setItem("authToken", token);
+        localStorage.setItem("userDetails", JSON.stringify(user));
+          navigate("/settings");
 
-        // Navigate to the /settings route
-        navigate("/settings");
+        // Role-based navigation
+        // if (user.role === "admin") {
+        //   navigate("/admin-dashboard");
+        // } else if (user.role === "student") {
+        //   navigate("/student-dashboard");
+        // } else {
+        // }
       } else {
-        const errorText = await response.text();
-        setErrorMessage(errorText || "Login failed. Please try again.");
+        setErrorMessage("Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      setErrorMessage("An error occurred. Please try again later.");
+      // Handle server or network errors
+      if (error.response) {
+        // Server-side error
+        setErrorMessage(
+          error.response.data || "Login failed. Please try again."
+        );
+      } else {
+        // Network or other errors
+        setErrorMessage("An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -127,6 +145,7 @@ export const Login = () => {
           <input
             type="email"
             value={email}
+            name="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
@@ -134,20 +153,26 @@ export const Login = () => {
           <input
             type="password"
             value={password}
+            name="password"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
           />
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md flex items-center justify-center">Login</button>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-md flex items-center justify-center"
+          >
+            Login
+          </button>
           {errorMessage && (
             <p className="text-red-600 mt-2 text-sm">{errorMessage}</p>
           )}
         </form>
       </FormInput>
       <AuthFooter
-        message="Dont have an account?"
+        message="Don't have an account?"
         className="text-[#1D4ED8] underline"
-        linkText="sign up"
+        linkText="Sign Up"
         linkTo="/signup"
       />
       <AuthFooter

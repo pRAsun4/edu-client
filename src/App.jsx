@@ -3,11 +3,14 @@ import "./Main.css";
 import PropTypes from "prop-types";
 import { Settings } from "./pages/Settings";
 import { Login, Signup, ForgotPassword, ResetPassword } from "./pages/auth";
+import { useEffect } from "react";
+import axios from "axios";
 
 // Mock authentication function (replace with actual logic)
 const isAuthenticated = () => {
   return localStorage.getItem("authToken") !== null; // Example: Check if a token exists
 };
+
 
 // PrivateRoute Component
 const PrivateRoute = ({ children }) => {
@@ -19,6 +22,8 @@ PrivateRoute.propTypes = {
 };
 
 function App() {
+  
+  
   return (
     <Routes>
       {/* Landing Page */}
