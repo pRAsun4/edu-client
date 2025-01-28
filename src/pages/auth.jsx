@@ -93,7 +93,7 @@ export const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/login",
+        "https://edu-server-z44l.onrender.com/auth/login",
         { email, password }, // Request body
         {
           headers: {

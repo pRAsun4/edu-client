@@ -30,7 +30,7 @@ export const InnerLayout = ({
       }
 
       const response = await fetch(
-        "http://localhost:5000/auth/logout",
+        "https://edu-server-z44l.onrender.com/auth/logout",
         {
           method: "GET",
           headers: {
